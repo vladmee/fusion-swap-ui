@@ -8,6 +8,7 @@ import {
 import { Swap } from "@/types/swap";
 
 export type SwapsStore = {
+  createSwap: (swapId: string) => void;
   swaps: Swap[];
   setSwaps: (swaps: Swap[]) => void;
   activeSwap: string | null;
@@ -33,6 +34,18 @@ export const useSwapsStore = create<SwapsStore>()(
       setActiveSwap: (swapId) => {
         set({ activeSwap: swapId });
         persistStorage(get().swaps, swapId);
+      },
+      createSwap: (swapId) => {
+        const newSwap = {
+          id: swapId,
+          fromTokenAddress: null,
+          toTokenAddress: null,
+        };
+        set((state) => ({
+          swaps: [...state.swaps, newSwap],
+          activeSwap: swapId,
+        }));
+        persistStorage([...get().swaps, newSwap], swapId);
       },
     }),
     {

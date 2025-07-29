@@ -6,14 +6,15 @@ import {
   SidebarMenu,
 } from "@/components/ui/sidebar";
 
-import { usePathname } from "next/navigation";
 import { useSwapsStore } from "@/store/swaps";
+import { NewSwapButton } from "./new-swap-button";
 
 export const SwapsList = () => {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Swaps</SidebarGroupLabel>
       <SidebarMenu>
+        <NewSwapButton />
         <SwapsFromStore />
       </SidebarMenu>
     </SidebarGroup>
@@ -34,17 +35,7 @@ const SwapsFromStore = () => {
   return (
     <>
       {swaps.map((swap) => (
-        <>{swap.id}</>
-        // <ChatItem
-        //   key={chat.id}
-        //   chat={chat}
-        //   isActive={pathname.includes(chat.id)}
-        //   onDelete={() => {
-        //     setDeleteId(swap.id);
-        //     setShowDeleteDialog(true);
-        //   }}
-        //   setOpenMobile={setOpenMobile}
-        // />
+        <div key={swap.id}>{swap.id}</div>
       ))}
     </>
   );
