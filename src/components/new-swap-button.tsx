@@ -6,5 +6,7 @@ import { Button } from "./ui/button";
 export const NewSwapButton = () => {
   const { onCreateNewSwap } = useSwapsActions();
 
-  return <Button onClick={onCreateNewSwap}>Create New Swap</Button>;
+  return (
+    <Button onClick={() => onCreateNewSwap.mutate()}>Create New Swap</Button>
+  );
 };

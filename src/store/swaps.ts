@@ -9,6 +9,7 @@ import { Swap } from "@/types/swap";
 
 export type SwapsStore = {
   createSwap: (swapId: string) => void;
+  deleteSwap: (swapId: string) => void;
   swaps: Swap[];
   setSwaps: (swaps: Swap[]) => void;
   activeSwap: string | null;
@@ -41,11 +42,27 @@ export const useSwapsStore = create<SwapsStore>()(
           fromTokenAddress: null,
           toTokenAddress: null,
         };
-        set((state) => ({
-          swaps: [...state.swaps, newSwap],
+        const newSwaps = [...get().swaps, newSwap];
+        set({
+          swaps: newSwaps,
           activeSwap: swapId,
-        }));
-        persistStorage([...get().swaps, newSwap], swapId);
+        });
+        persistStorage(newSwaps, swapId);
+      },
+      deleteSwap: (swapId) => {
+        const remainingSwaps = get().swaps.filter((swap) => swap.id !== swapId);
+        const newActiveSwap =
+          get().activeSwap === swapId
+            ? remainingSwaps.length > 0
+              ? remainingSwaps[0].id
+              : null
+            : get().activeSwap;
+
+        set({
+          swaps: remainingSwaps,
+          activeSwap: newActiveSwap,
+        });
+        persistStorage(remainingSwaps, newActiveSwap);
       },
     }),
     {

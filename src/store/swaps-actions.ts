@@ -1,27 +1,46 @@
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import {
+  useQuery,
+  UseQueryResult,
+  useMutation,
+  useQueryClient,
+  UseMutationResult,
+} from "@tanstack/react-query";
 import { useSwapsStore } from "./swaps";
 import { useCallback } from "react";
 import { generateUUID } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Swap } from "@/types/swap";
 
 export function useSwapsActions(): {
-  onCreateNewSwap: () => void;
+  onCreateNewSwap: UseMutationResult<{ id: string }, Error, void, unknown>;
   onPaginatedSwaps: (
-    limit: number,
-    cursor: string,
-  ) => ReturnType<typeof useQuery>;
+    limit?: number,
+    cursor?: string,
+  ) => UseQueryResult<{
+    items: Swap[];
+    hasMore: boolean;
+    nextCursor: string | null;
+  }>;
   onSwapById: (id?: string) => UseQueryResult<Swap, Error>;
+  onDeleteSwap: UseMutationResult<{ id: string }, Error, string, unknown>;
 } {
   const router = useRouter();
-  const { swaps, setActiveSwap, createSwap } = useSwapsStore();
+  const pathname = usePathname();
+  const queryClient = useQueryClient();
+  const { swaps, setActiveSwap, createSwap, deleteSwap } = useSwapsStore();
 
-  const onCreateNewSwap = useCallback(() => {
-    const newSwapId = generateUUID();
-    createSwap(newSwapId);
-    setActiveSwap(newSwapId);
-    router.push(`/${newSwapId}`);
-  }, [createSwap, setActiveSwap]);
+  const onCreateNewSwap = useMutation({
+    mutationFn: async () => {
+      const newSwapId = generateUUID();
+      createSwap(newSwapId);
+      return { id: newSwapId };
+    },
+    onSuccess: ({ id }) => {
+      setActiveSwap(id);
+      queryClient.invalidateQueries({ queryKey: ["paginated-swaps"] });
+      router.push(`/${id}`);
+    },
+  });
 
   const onPaginatedSwaps = (limit = 10, cursor: string | null = null) =>
     useQuery({
@@ -58,6 +77,8 @@ export function useSwapsActions(): {
         const [, id] = queryKey;
 
         const swap = swaps.find((s) => s.id === id);
+
+        console.log("Fetching swap by id:", id, "Found:", swap);
         if (!swap) {
           throw new Error(`Swap with id ${id} not found`);
         }
@@ -67,9 +88,23 @@ export function useSwapsActions(): {
       enabled: !!id,
     });
 
+  const onDeleteSwap = useMutation({
+    mutationFn: async (id: string) => {
+      deleteSwap(id);
+      return { id };
+    },
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: ["paginated-swaps"] });
+      if (pathname.includes(id)) {
+        router.push("/");
+      }
+    },
+  });
+
   return {
     onCreateNewSwap,
     onPaginatedSwaps,
     onSwapById,
+    onDeleteSwap,
   };
 }

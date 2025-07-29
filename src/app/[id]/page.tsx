@@ -9,13 +9,13 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
   const { id } = useParams();
   const { onSwapById } = useSwapsActions();
 
-  const { data: swap, isError } = onSwapById(Array.isArray(id) ? id[0] : id);
+  const { data: swap, error } = onSwapById(Array.isArray(id) ? id[0] : id);
 
   useEffect(() => {
-    if (isError) {
-      router.replace("/404");
+    if (error) {
+      router.push("/");
     }
-  }, [isError, router]);
+  }, [error, router]);
 
   if (!swap) {
     return <div>Loading...</div>;
