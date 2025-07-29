@@ -13,6 +13,7 @@ import { Logo } from "@/components/ui/logo";
 import Link from "next/link";
 import { HStack, VStack } from "@/components/ui/stack";
 import { SiGithub } from "@icons-pack/react-simple-icons";
+import { SwapsList } from "./swaps-list";
 
 export async function AppSidebar({
   ...props
@@ -29,7 +30,9 @@ export async function AppSidebar({
           </HStack>
         </Link>
       </SidebarHeader>
-      <SidebarContent className="gap-0 pt-2">all swaps here...</SidebarContent>
+      <SidebarContent className="gap-0 pt-2">
+        <SwapsList />
+      </SidebarContent>
       <SidebarFooter className="flex flex-col gap-2 p-3 group-data-[collapsible=icon]:p-2">
         <SidebarMenuButton
           asChild
