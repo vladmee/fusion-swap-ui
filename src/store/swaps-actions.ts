@@ -21,13 +21,24 @@ export function useSwapsActions(): {
     hasMore: boolean;
     nextCursor: string | null;
   }>;
-  onSwapById: (id?: string) => UseQueryResult<Swap, Error>;
+  onSwapById: (id?: string | null) => UseQueryResult<Swap, Error>;
   onDeleteSwap: UseMutationResult<{ id: string }, Error, string, unknown>;
+  onUpdateActiveSwap: (
+    key: "fromChainId" | "fromTokenAddress" | "toTokenAddress" | "toChainId",
+    value: string,
+  ) => void;
 } {
   const router = useRouter();
   const pathname = usePathname();
   const queryClient = useQueryClient();
-  const { swaps, setActiveSwap, createSwap, deleteSwap } = useSwapsStore();
+  const {
+    swaps,
+    setActiveSwap,
+    createSwap,
+    deleteSwap,
+    updateSwap,
+    activeSwap,
+  } = useSwapsStore();
 
   const onCreateNewSwap = useMutation({
     mutationFn: async () => {
@@ -44,7 +55,7 @@ export function useSwapsActions(): {
 
   const onPaginatedSwaps = (limit = 10, cursor: string | null = null) =>
     useQuery({
-      queryKey: ["paginated-swaps", limit, cursor],
+      queryKey: ["paginated-swaps", limit, cursor, swaps],
       queryFn: async ({ queryKey }) => {
         const [, rawLimit, cursor] = queryKey;
         const limit = typeof rawLimit === "number" ? rawLimit : 10;
@@ -62,6 +73,8 @@ export function useSwapsActions(): {
             ? paginatedSwaps[paginatedSwaps.length - 1]?.id
             : null;
 
+        console.log({ paginatedSwaps, swaps });
+
         return {
           items: paginatedSwaps,
           hasMore: paginatedSwaps.length > limit,
@@ -70,7 +83,7 @@ export function useSwapsActions(): {
       },
     });
 
-  const onSwapById = (id?: string) =>
+  const onSwapById = (id?: string | null) =>
     useQuery({
       queryKey: ["swap", id],
       queryFn: async ({ queryKey }) => {
@@ -101,10 +114,23 @@ export function useSwapsActions(): {
     },
   });
 
+  const onUpdateActiveSwap = useCallback(
+    (
+      key: "fromChainId" | "fromTokenAddress" | "toTokenAddress" | "toChainId",
+      value: string,
+    ) => {
+      if (!activeSwap) return;
+      updateSwap(activeSwap, key, value);
+      queryClient.invalidateQueries({ queryKey: ["swap", activeSwap] });
+    },
+    [activeSwap, updateSwap],
+  );
+
   return {
     onCreateNewSwap,
     onPaginatedSwaps,
     onSwapById,
     onDeleteSwap,
+    onUpdateActiveSwap,
   };
 }

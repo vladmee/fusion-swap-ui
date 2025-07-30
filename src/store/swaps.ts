@@ -14,59 +14,55 @@ export type SwapsStore = {
   setSwaps: (swaps: Swap[]) => void;
   activeSwap: string | null;
   setActiveSwap: (swapId: string | null) => void;
-};
-
-const initialStorage = loadSwapsStorage();
-
-const persistStorage = (swaps: Swap[], activeSwap: string | null) => {
-  const storage: SwapsStorage = { activeSwap, swaps };
-  saveSwapsStorage(storage);
+  updateSwap: <K extends keyof Omit<Swap, "id">>(
+    swapId: string,
+    key: K,
+    value: Swap[K],
+  ) => void;
 };
 
 export const useSwapsStore = create<SwapsStore>()(
   persist(
     (set, get) => ({
-      activeSwap: initialStorage.activeSwap,
-      swaps: initialStorage.swaps,
-      setSwaps: (swaps) => {
-        set({ swaps });
-        persistStorage(swaps, get().activeSwap);
-      },
-      setActiveSwap: (swapId) => {
-        set({ activeSwap: swapId });
-        persistStorage(get().swaps, swapId);
-      },
+      activeSwap: null,
+      swaps: [],
+      setSwaps: (swaps) => set({ swaps }),
+      setActiveSwap: (swapId) => set({ activeSwap: swapId }),
       createSwap: (swapId) => {
-        const newSwap = {
+        const newSwap: Swap = {
           id: swapId,
           fromTokenAddress: null,
           toTokenAddress: null,
+          fromChainId: null,
+          toChainId: null,
         };
-        const newSwaps = [...get().swaps, newSwap];
-        set({
-          swaps: newSwaps,
+        set((state) => ({
+          swaps: [...state.swaps, newSwap],
           activeSwap: swapId,
-        });
-        persistStorage(newSwaps, swapId);
+        }));
       },
       deleteSwap: (swapId) => {
-        const remainingSwaps = get().swaps.filter((swap) => swap.id !== swapId);
-        const newActiveSwap =
-          get().activeSwap === swapId
-            ? remainingSwaps.length > 0
-              ? remainingSwaps[0].id
-              : null
-            : get().activeSwap;
-
-        set({
-          swaps: remainingSwaps,
-          activeSwap: newActiveSwap,
+        set((state) => {
+          const remainingSwaps = state.swaps.filter(
+            (swap) => swap.id !== swapId,
+          );
+          const newActiveSwap =
+            state.activeSwap === swapId
+              ? remainingSwaps.length > 0
+                ? remainingSwaps[0].id
+                : null
+              : state.activeSwap;
+          return { swaps: remainingSwaps, activeSwap: newActiveSwap };
         });
-        persistStorage(remainingSwaps, newActiveSwap);
+      },
+      updateSwap: (swapId, key, value) => {
+        set((state) => ({
+          swaps: state.swaps.map((swap) =>
+            swap.id === swapId ? { ...swap, [key]: value } : swap,
+          ),
+        }));
       },
     }),
-    {
-      name: "swaps-storage",
-    },
+    { name: "swaps-storage" },
   ),
 );

@@ -1,5 +1,6 @@
 "use client";
 
+import { SwapInterface } from "@/components/swap-interface";
 import { useSwapsActions } from "@/store/swaps-actions";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -21,5 +22,5 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
     return <div>Loading...</div>;
   }
 
-  return <>{swap.id}</>;
+  return <SwapInterface />;
 }
