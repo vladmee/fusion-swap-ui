@@ -1,7 +1,4 @@
-import {
-  SupportedChain,
-  SupportedChainsResponse,
-} from "@/app/api/supported-chains/schema";
+import { SupportedChain } from "@/app/api/supported-chains/schema";
 import { useQuery } from "@tanstack/react-query";
 
 const fetchSupportedChains = async (): Promise<SupportedChain[]> => {
