@@ -19,10 +19,24 @@ export const ChainSelector = ({
 }: ChainSelectorProps) => {
   const options: WheelPickerOption[] = useMemo(
     () =>
-      chains?.map((chain) => ({
-        label: chain.chain_name,
-        value: String(chain.chain_id),
-      })) ?? [],
+      chains
+        ?.filter((chain) => chain.chain_name !== "Sonic")
+        .map((chain) => ({
+          label: (
+            <div
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+            >
+              <img
+                src={chain.chain_icon}
+                alt={chain.chain_name}
+                width={24}
+                height={24}
+              />
+              <span className="min-w-28">{chain.chain_name}</span>
+            </div>
+          ),
+          value: String(chain.chain_id),
+        })) ?? [],
     [chains],
   );
 

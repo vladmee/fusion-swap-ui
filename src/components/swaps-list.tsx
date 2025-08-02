@@ -25,7 +25,6 @@ import { useSwapsActions } from "@/store/swaps-actions";
 export const SwapsList = () => {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Swaps</SidebarGroupLabel>
       <SidebarMenu>
         <NewSwapButton />
         <SwapsFromStore />

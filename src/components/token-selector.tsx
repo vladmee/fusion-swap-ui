@@ -20,10 +20,24 @@ export const TokenSelector = ({
 }: TokenSelectorProps) => {
   const options: WheelPickerOption[] = useMemo(
     () =>
-      tokens?.map((token) => ({
-        label: token.name,
-        value: token.address,
-      })) ?? [],
+      tokens
+        ?.filter((token) => !!token.logoURI)
+        .map((token) => ({
+          label: (
+            <div
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+            >
+              <img
+                src={token.logoURI!}
+                alt={token.name}
+                width={24}
+                height={24}
+              />
+              <span className="min-w-28">{token.name}</span>
+            </div>
+          ),
+          value: String(token.address),
+        })) ?? [],
     [tokens],
   );
 
