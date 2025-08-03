@@ -66,7 +66,7 @@ export function GuideInterface() {
   };
 
   return (
-    <div className="mt-40 flex h-full w-1/3 flex-col items-start justify-start gap-6">
+    <div className="flex h-full flex-col items-start justify-start gap-6">
       {!clicked && (
         <Button
           onClick={handleGuideClick}

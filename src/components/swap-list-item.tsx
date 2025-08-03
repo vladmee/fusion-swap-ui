@@ -37,57 +37,70 @@ const PureSwapListItem = ({
     (chain) => String(chain.chain_id) === swap.toChainId,
   );
 
+  console.log("Swap List Item:", {
+    fromChain,
+    fromToken,
+    toChain,
+    toToken,
+  });
+
   if (!fromChain || !toChain || !fromToken || !toToken) {
     return null;
   }
 
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton asChild isActive={isActive}>
+      <SidebarMenuButton
+        asChild
+        isActive={isActive}
+        className={cn("w-full", isActive && "bg-accent text-accent-foreground")}
+      >
         <HStack className="justify-between">
-          <Link href={`/${swap.id}`}>
-            <div className="flex min-w-0 items-center gap-2">
-              {fromChain && (
-                <img
-                  src={fromChain.chain_icon}
-                  alt={fromChain.chain_name}
-                  width={24}
-                  height={24}
-                />
-              )}
-              {fromToken && fromToken.logoURI && (
-                <img
-                  src={fromToken.logoURI}
-                  alt={fromToken.name}
-                  width={24}
-                  height={24}
-                />
-              )}
-              {"<>"}
-              {toChain && (
-                <img
-                  src={toChain.chain_icon}
-                  alt={toChain.chain_name}
-                  width={24}
-                  height={24}
-                />
-              )}
-              {toToken && toToken.logoURI && (
-                <img
-                  src={toToken.logoURI}
-                  alt={toToken.name}
-                  width={24}
-                  height={24}
-                />
-              )}
-            </div>
+          <Link
+            href={`/${swap.id}`}
+            className="flex min-w-0 flex-1 items-center gap-2"
+          >
+            {fromChain && (
+              <img
+                src={fromChain.chain_icon}
+                alt={fromChain.chain_name}
+                width={24}
+                height={24}
+              />
+            )}
+            {fromToken && fromToken.logoURI && (
+              <img
+                src={fromToken.logoURI}
+                alt={fromToken.name}
+                width={24}
+                height={24}
+              />
+            )}
+            {"->"}
+            {toChain && (
+              <img
+                src={toChain.chain_icon}
+                alt={toChain.chain_name}
+                width={24}
+                height={24}
+              />
+            )}
+            {toToken && toToken.logoURI && (
+              <img
+                src={toToken.logoURI}
+                alt={toToken.name}
+                width={24}
+                height={24}
+              />
+            )}
           </Link>
-          <div
-            className="text-destructive focus:bg-destructive/15 focus:text-destructive hove:font-bold cursor-pointer"
+          <button
+            type="button"
+            className="text-destructive focus:bg-destructive/15 focus:text-destructive cursor-pointer rounded-sm p-1 hover:font-bold"
             onClick={() => onDelete(swap.id)}
           >
             <Trash className="text-destructive size-4 opacity-70" />
-          </div>
+          </button>
         </HStack>
       </SidebarMenuButton>
     </SidebarMenuItem>

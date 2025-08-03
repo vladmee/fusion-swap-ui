@@ -27,6 +27,9 @@ export const SwapsList = () => {
     <SidebarGroup>
       <SidebarMenu>
         <NewSwapButton />
+        <SidebarGroupLabel>
+          <hr />
+        </SidebarGroupLabel>
         <SwapsFromStore />
       </SidebarMenu>
     </SidebarGroup>
@@ -53,7 +56,13 @@ const SwapsFromStore = () => {
     return null;
   }
 
-  if (!swaps || swaps.items.length === 0) {
+  const validSwaps = swaps?.items.filter(
+    (swap) => swap && Object.values(swap).every((value) => value !== null),
+  );
+
+  console.log("Valid Swaps:", validSwaps);
+
+  if (!validSwaps || validSwaps.length === 0) {
     return (
       <div className="text-muted-foreground overflow-hidden px-2 text-sm whitespace-nowrap group-data-[collapsible=icon]:hidden">
         No swaps yet.
@@ -63,7 +72,8 @@ const SwapsFromStore = () => {
 
   return (
     <>
-      {swaps.items.map((swap) => (
+      <SidebarGroupLabel>Your Swaps</SidebarGroupLabel>
+      {validSwaps.map((swap) => (
         <SwapListItem
           key={swap.id}
           swap={swap}
@@ -79,8 +89,8 @@ const SwapsFromStore = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              Delete swap data from your browser storage. This action cannot be
-              undone.
+              Delete swap data from your browser storage. <br />
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
