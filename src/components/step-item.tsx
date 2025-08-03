@@ -55,6 +55,8 @@ export const StepItem = ({
   const afterActive = index >= value;
   const isActive = index === value;
 
+  const CtaButton = item.button ? item.button : null;
+
   return (
     <Card
       className={cn("min-h-[250px] w-full max-w-sm", {
@@ -85,11 +87,7 @@ export const StepItem = ({
         <p>{item.description}</p>
       </CardContent>
       <CardFooter className="flex-col gap-2">
-        {item.button && (
-          <Button type="submit" className="w-full" disabled={!isActive}>
-            {item.button.text}
-          </Button>
-        )}
+        {CtaButton && <CtaButton isActive={isActive} />}
         <Button variant="outline" className="w-full" disabled={!isActive}>
           Learn more
         </Button>

@@ -6,6 +6,7 @@ export const SwapSchema = z.object({
   fromTokenAddress: z.string().nullable(),
   toTokenAddress: z.string().nullable(),
   toChainId: z.string().nullable(),
+  isCorrectChain: z.boolean().default(false),
 });
 
 export type Swap = z.infer<typeof SwapSchema>;

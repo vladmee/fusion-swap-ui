@@ -2,6 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode } from "react";
+import { ThirdwebProvider } from "thirdweb/react";
 
 export const queryClient: QueryClient = new QueryClient({
   defaultOptions: {
@@ -14,6 +15,8 @@ export const queryClient: QueryClient = new QueryClient({
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThirdwebProvider>{children}</ThirdwebProvider>
+    </QueryClientProvider>
   );
 }

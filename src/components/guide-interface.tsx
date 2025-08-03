@@ -3,47 +3,53 @@
 import React, { useState } from "react";
 import { LoadingState, MultiStepLoader } from "./ui/multi-step-loader";
 import { CheckCheckIcon, XIcon } from "lucide-react";
+import { ConnectButton } from "./connect-button";
+import { Button } from "./ui/button";
+import { useActiveAccount } from "thirdweb/react";
+import { SwitchNetworkButton } from "./switch-network-button";
 
 export const swapSteps: LoadingState[] = [
   {
     title: "Connect wallet",
     description:
       "Connect your wallet to load balances, networks and addresses.",
-    button: {
-      text: "Connect wallet",
-    },
+    button: (props) => <ConnectButton {...props} />,
   },
   {
-    title: "Switch to Ethereum",
+    title: "Switch Network",
     description:
       "Make sure you’re on the source chain so you can approve and sign the swap.",
-    button: {
-      text: "Switch network",
-    },
+    button: (props) => <SwitchNetworkButton {...props} />,
   },
   {
-    title: "Approve USDC",
+    title: "Approve spending",
     description:
-      "Grant the Fusion+ settlement contract permission to move up to 100 USDC from your wallet when a resolver fills the order. (Gas fee required - standard ERC-20 approval)",
-    button: {
-      text: "Approve USDC",
-    },
+      "Grant the Fusion+ settlement contract permission to move the tokens from your wallet when a resolver fills the order. (Gas fee required - standard ERC-20 approval)",
+    button: ({ isActive, item }) => (
+      <Button className="w-full" disabled={!isActive}>
+        Approve USDC
+      </Button>
+    ),
   },
   {
     title: "Sign swap intent",
     description:
       "Review the EIP-712 message and sign off-chain. This is gas-free and does not move funds; it just tells resolvers the terms of your swap.",
-    button: {
-      text: "Sign intent",
-    },
+    button: ({ isActive, item }) => (
+      <Button className="w-full" disabled={!isActive}>
+        Sign intent
+      </Button>
+    ),
   },
   {
     title: "Post order & start auction",
     description:
       "Broadcast the signed order to the Fusion+ order-book. Resolvers now compete in a Dutch auction to fill it at the best rate.",
-    button: {
-      text: "Start auction",
-    },
+    button: ({ isActive, item }) => (
+      <Button className="w-full" disabled={!isActive}>
+        Start auction
+      </Button>
+    ),
   },
   {
     title: "Monitor settlement",

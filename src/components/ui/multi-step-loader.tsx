@@ -1,16 +1,16 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "motion/react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, ComponentType } from "react";
 import { StepItem } from "@/components/step-item";
+import { useActiveAccount, useActiveWallet } from "thirdweb/react";
+import { useParams } from "next/navigation";
+import { useSwapsStore } from "@/store/swaps";
 
 export type LoadingState = {
   title: string;
   description: string;
-  button?: {
-    text: string;
-    onClick?: () => void;
-  };
+  button?: ComponentType<any>;
 };
 
 const LoaderCore = ({
@@ -54,10 +54,27 @@ export const MultiStepLoader = ({
   setLoading: (loading: boolean) => void;
 }) => {
   const [currentState, setCurrentState] = useState(0);
+  const activeAccount = useActiveAccount();
+  const wallet = useActiveWallet();
+  const { id } = useParams();
+  const { swaps } = useSwapsStore();
+  const swap = swaps.find((s) => s.id === id);
 
   useEffect(() => {
     if (!loading) {
-      setCurrentState(0);
+      let activeState = 0;
+
+      if (activeAccount?.address) {
+        activeState = 1;
+      }
+      console.log({
+        one: String(wallet?.getChain()?.id),
+        two: swap?.fromChainId,
+      });
+      if (String(wallet?.getChain()?.id) === swap?.fromChainId) {
+        activeState = 2;
+      }
+      setCurrentState(activeState);
       return;
     }
 
@@ -81,6 +98,16 @@ export const MultiStepLoader = ({
     }
 
     return () => clearTimeout(timeout);
-  }, [currentState, loading, loadingStates.length, duration, setLoading]);
+  }, [
+    currentState,
+    loading,
+    loadingStates.length,
+    duration,
+    setLoading,
+    activeAccount,
+    wallet,
+    swap,
+    swap?.isCorrectChain,
+  ]);
   return <LoaderCore value={currentState} loadingStates={loadingStates} />;
 };

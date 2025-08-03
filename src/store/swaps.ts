@@ -35,6 +35,7 @@ export const useSwapsStore = create<SwapsStore>()(
           toTokenAddress: null,
           fromChainId: null,
           toChainId: null,
+          isCorrectChain: false,
         };
         set((state) => ({
           swaps: [...state.swaps, newSwap],
