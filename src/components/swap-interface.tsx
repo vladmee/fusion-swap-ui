@@ -9,6 +9,7 @@ import { useParams } from "next/navigation";
 import { useTokensByChain } from "@/hooks/use-tokens-by-chain";
 import { TokenSelector } from "./token-selector";
 import { useTokensBalances } from "@/hooks/use-tokens-balances";
+import { GuideInterface } from "./guide-interface";
 
 export const SwapInterface = () => {
   const { id } = useParams();
@@ -27,7 +28,7 @@ export const SwapInterface = () => {
 
   return (
     <div className="flex h-screen w-full items-center justify-center">
-      <div className="flex h-full w-1/2 flex-col justify-center">
+      <div className="flex h-full w-1/3 flex-col justify-center">
         <ChainSelector
           chains={supportedChains}
           value={swap.fromChainId || "1"}
@@ -45,7 +46,8 @@ export const SwapInterface = () => {
           </div>
         )}
       </div>
-      <div className="flex h-full w-1/2 flex-col justify-center">
+      <GuideInterface />
+      <div className="flex h-full w-1/3 flex-col justify-center">
         <ChainSelector
           chains={supportedChains}
           value={swap.toChainId || "1"}
