@@ -51,16 +51,25 @@ export const StepItem = ({
   index: number;
   value: number;
 }) => {
+  const beforeActive = index < value;
+  const afterActive = index >= value;
+  const isActive = index === value;
+
   return (
-    <Card className="min-h-[250px] w-full max-w-sm">
+    <Card
+      className={cn("min-h-[250px] w-full max-w-sm", {
+        "opacity-50": !isActive,
+        "border-2 border-lime-500": isActive,
+      })}
+    >
       <CardHeader>
         <CardTitle>{item.title}</CardTitle>
         <CardAction>
           <div>
-            {index > value && (
+            {afterActive && (
               <CheckIcon className="text-black dark:text-white" />
             )}
-            {index <= value && (
+            {beforeActive && (
               <CheckFilled
                 className={cn(
                   "text-black dark:text-white",
@@ -76,10 +85,12 @@ export const StepItem = ({
         <p>{item.description}</p>
       </CardContent>
       <CardFooter className="flex-col gap-2">
-        <Button type="submit" className="w-full">
-          {item.button.text}
-        </Button>
-        <Button variant="outline" className="w-full">
+        {item.button && (
+          <Button type="submit" className="w-full" disabled={!isActive}>
+            {item.button.text}
+          </Button>
+        )}
+        <Button variant="outline" className="w-full" disabled={!isActive}>
           Learn more
         </Button>
       </CardFooter>

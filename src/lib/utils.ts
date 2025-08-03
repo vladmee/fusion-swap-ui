@@ -12,3 +12,12 @@ export function generateUUID(): string {
     return v.toString(16);
   });
 }
+
+export function isCompleteSwap(
+  swap: Record<string, unknown> | null | undefined,
+): boolean {
+  if (!swap) {
+    return false;
+  }
+  return Object.values(swap).every((value) => value !== null);
+}

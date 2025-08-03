@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { LoadingState, MultiStepLoader } from "./ui/multi-step-loader";
 import { CheckCheckIcon, XIcon } from "lucide-react";
-import { Button } from "./ui/button";
 
 export const swapSteps: LoadingState[] = [
   {
@@ -50,9 +49,6 @@ export const swapSteps: LoadingState[] = [
     title: "Monitor settlement",
     description:
       "Track escrow creation on Ethereum ➜ escrow on TON ➜ secret reveal. No action needed unless you want to cancel after the exclusivity window.",
-    button: {
-      text: "",
-    },
   },
 ];
 
@@ -68,16 +64,33 @@ export function GuideInterface() {
   return (
     <div className="flex h-full flex-col items-start justify-start gap-6">
       {!clicked && (
-        <Button
+        <button
           onClick={handleGuideClick}
-          className="mx-auto flex h-10 cursor-pointer items-center justify-center rounded-lg bg-[#39C3EF] px-8 text-sm font-medium text-black transition duration-200 hover:bg-[#39C3EF]/90 md:text-base"
-          style={{
-            boxShadow:
-              "0px -1px 0px 0px #ffffff40 inset, 0px 1px 0px 0px #ffffff40 inset",
-          }}
+          className="group relative mx-auto inline-block cursor-pointer rounded-full bg-slate-800 p-px text-xs leading-6 font-semibold text-white no-underline shadow-2xl shadow-zinc-900"
         >
-          Guide me
-        </Button>
+          <span className="absolute inset-0 overflow-hidden rounded-full">
+            <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(56,189,248,0.6)_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+          </span>
+          <div className="relative z-10 flex items-center space-x-2 rounded-full bg-zinc-950 px-4 py-0.5 ring-1 ring-white/10">
+            <span>Preview</span>
+            <svg
+              fill="none"
+              height="16"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10.75 8.75L14.25 12L10.75 15.25"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+              />
+            </svg>
+          </div>
+          <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-emerald-400/0 via-emerald-400/90 to-emerald-400/0 transition-opacity duration-500 group-hover:opacity-40" />
+        </button>
       )}
       <MultiStepLoader
         loadingStates={swapSteps}

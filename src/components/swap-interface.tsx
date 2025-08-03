@@ -10,6 +10,7 @@ import { useTokensByChain } from "@/hooks/use-tokens-by-chain";
 import { TokenSelector } from "./token-selector";
 import { useTokensBalances } from "@/hooks/use-tokens-balances";
 import { GuideInterface } from "./guide-interface";
+import { isCompleteSwap } from "@/lib/utils";
 
 export const SwapInterface = () => {
   const { id } = useParams();
@@ -26,21 +27,37 @@ export const SwapInterface = () => {
 
   if (!swap) return <div>No swap found.</div>;
 
+  const isComplete = isCompleteSwap(swap);
+
   return (
     <div className="flex h-screen w-full flex-col overflow-clip">
       <div className="flex w-full items-center justify-center">
-        <div className="flex w-1/3 items-center justify-center border-r border-r-neutral-200 px-4 py-10 text-3xl font-semibold">
+        <div
+          className={`flex ${
+            isComplete ? "w-1/3" : "w-1/2"
+          } items-center justify-center border-r border-r-neutral-200 px-4 py-10 text-3xl font-semibold`}
+        >
           From Network & Token
         </div>
-        <div className="flex w-1/3 items-center justify-center border-r border-r-neutral-200 px-4 py-10 text-3xl font-semibold">
-          Guide
-        </div>
-        <div className="flex w-1/3 items-center justify-center px-4 py-10 text-3xl font-semibold">
+        {isComplete && (
+          <div className="flex w-1/3 items-center justify-center border-r border-r-neutral-200 px-4 py-10 text-3xl font-semibold">
+            Guide
+          </div>
+        )}
+        <div
+          className={`flex ${
+            isComplete ? "w-1/3" : "w-1/2"
+          } items-center justify-center px-4 py-10 text-3xl font-semibold`}
+        >
           To Network & Token
         </div>
       </div>
       <div className="flex h-full w-full items-start justify-start">
-        <div className="flex h-full w-1/3 flex-col justify-start border-r border-r-neutral-200">
+        <div
+          className={`flex h-full ${
+            isComplete ? "w-1/3" : "w-1/2"
+          } flex-col justify-start border-r border-r-neutral-200`}
+        >
           <ChainSelector
             chains={supportedChains}
             value={swap.fromChainId || "1"}
@@ -58,10 +75,14 @@ export const SwapInterface = () => {
             </div>
           )}
         </div>
-        <div className="max-h-full w-1/3 border-r border-r-neutral-200">
-          <GuideInterface />
-        </div>
-        <div className="flex h-full w-1/3 flex-col justify-start">
+        {isComplete && (
+          <div className="max-h-full w-1/3 border-r border-r-neutral-200 px-4">
+            <GuideInterface />
+          </div>
+        )}
+        <div
+          className={`flex h-full ${isComplete ? "w-1/3" : "w-1/2"} flex-col justify-start`}
+        >
           <ChainSelector
             chains={supportedChains}
             value={swap.toChainId || "1"}

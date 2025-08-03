@@ -7,7 +7,7 @@ import { StepItem } from "@/components/step-item";
 export type LoadingState = {
   title: string;
   description: string;
-  button: {
+  button?: {
     text: string;
     onClick?: () => void;
   };
